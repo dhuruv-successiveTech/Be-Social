@@ -1,0 +1,123 @@
+const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
+const { createServer } = require('http');
+const { WebSocketServer } = require('ws');
+const { useServer } = require('graphql-ws/lib/use/ws');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const errorHandler = require('./middleware/error.middleware');
+require('dotenv').config();
+
+const connectDB = require('./config/db');
+const typeDefs = require('./graphql/typeDefs');
+const resolvers = require('./graphql/resolvers');
+const upload = require('./middleware/upload.middleware'); // Import upload middleware for avatars
+const uploadPostMedia = require('./middleware/uploadPostMedia.middleware'); // Import upload middleware for post media
+const authController = require('./controllers/auth/auth.controller'); // Import authController
+const postService = require('./services/post/post.service'); // Import postService
+const { verifyToken } = require('./services/auth/auth.service'); // Import verifyToken
+
+async function startServer() {
+  const app = express();
+  
+  // Security middleware
+  app.use(helmet());
+  app.use(compression());
+  app.use(cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    credentials: true
+  }));
+  
+  // Connect to MongoDB
+  await connectDB();
+  
+  // Middleware
+  app.use(cors());
+  app.use(express.json());
+
+  // New route for user registration with image upload
+  app.post('/register-with-avatar', upload.single('avatar'), async (req, res) => {
+    try {
+      const { username, email, password, name } = req.body;
+      const avatar = req.file ? req.file.path : null; // Cloudinary URL
+
+      const result = await authController.register(username, email, password, name, avatar);
+      res.status(201).json(result);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // New route for post creation with media upload
+  app.post('/create-post-with-media', uploadPostMedia, async (req, res) => {
+    try {
+      const { content } = req.body;
+      const media = req.files ? req.files.map(file => file.path) : []; // Array of Cloudinary URLs
+
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+      }
+
+      let decodedToken;
+      try {
+        decodedToken = verifyToken(authHeader);
+      } catch (error) {
+        return res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
+      }
+      const userId = decodedToken.id; // Extract user ID from decoded token
+
+      const result = await postService.createPost(content, media, userId);
+      res.status(201).json(result);
+    } catch (error) {
+      console.error("Error creating post with media:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+  
+  // Create schema
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  
+  // Create Apollo Server
+  const apolloServer = new ApolloServer({
+    schema,
+    context: ({ req }) => ({ req }),
+  });
+  
+  // Start Apollo Server
+  await apolloServer.start();
+  apolloServer.applyMiddleware({ app });
+  
+  // Create HTTP server
+  const httpServer = createServer(app);
+  
+  // Create WebSocket server
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/graphql',
+  });
+  
+  // Use WebSocket server for GraphQL subscriptions
+  useServer(
+    {
+      schema,
+      context: (ctx) => ctx,
+    },
+    wsServer
+  );
+  
+  const PORT = process.env.PORT || 4000;
+  
+  // Start server
+  httpServer.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`GraphQL endpoint: http://localhost:${PORT}${apolloServer.graphqlPath}`);
+    console.log(`WebSocket endpoint: ws://localhost:${PORT}/graphql`);
+    console.log(`New registration endpoint: http://localhost:${PORT}/register-with-avatar`);
+    console.log(`New post creation endpoint: http://localhost:${PORT}/create-post-with-media`);
+  });
+}
+
+startServer().catch(console.error);
