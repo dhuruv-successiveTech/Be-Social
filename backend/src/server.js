@@ -61,9 +61,14 @@ async function startServer() {
         return res.status(401).json({ message: 'Unauthorized: No token provided' });
       }
 
+      const token = authHeader.split(' ')[1]; // Extract token from 'Bearer <token>'
+      if (!token) {
+        return res.status(401).json({ message: 'Unauthorized: Invalid token format' });
+      }
+
       let decodedToken;
       try {
-        decodedToken = verifyToken(authHeader);
+        decodedToken = verifyToken(token); // Pass only the token
       } catch (error) {
         return res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
       }
