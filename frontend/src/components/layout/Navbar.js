@@ -14,14 +14,12 @@ import {
   CogIcon
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../hooks/useAuth";
-import { useTheme } from "../../context/ThemeContext";
 import NotificationList from "../notification/NotificationList";
 
 const navigation = [
   { name: "Home", href: "/", current: true, icon: HomeIcon },
   { name: "Explore", href: "/explore", current: false, icon: GlobeAltIcon },
   { name: "Messages", href: "/messages", current: false, icon: ChatBubbleOvalLeftIcon },
-  { name: "Notifications", href: "/notifications", current: false, icon: BellIcon },
 ];
 
 function classNames(...classes) {
@@ -30,8 +28,6 @@ function classNames(...classes) {
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme, colors } = useTheme();
-  const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const handleCloseNotifications = () => {
@@ -39,17 +35,13 @@ const Navbar = () => {
   };
 
   return (
-    <Disclosure as="nav" className={`${theme === 'light' ? 'bg-[#FFFAF5] text-gray-900 shadow-warm' : 'bg-gray-800 text-gray-100 shadow-cool'} shadow-md sticky top-0 z-50 transition-all duration-200`}>
+    <Disclosure as="nav" className={`bg-gray-800 text-gray-100 shadow-cool shadow-md sticky top-0 z-50 transition-all duration-200`}>
       {({ open }) => (
         <>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative flex items-center justify-between h-16">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                <Disclosure.Button className={`inline-flex items-center justify-center p-2 rounded-lg ${
-                  theme === 'light' 
-                    ? 'text-gray-600 hover:bg-[#FFF6E9] focus:ring-indigo-500' 
-                    : 'text-gray-300 hover:bg-gray-700 focus:ring-indigo-400'
-                } focus:outline-none focus:ring-2 transition-all duration-200`}>
+                <Disclosure.Button className={`inline-flex items-center justify-center p-2 rounded-lg text-gray-300 hover:bg-gray-700 focus:ring-indigo-400 focus:outline-none focus:ring-2 transition-all duration-200`}>
                   <span className="sr-only">Open main menu</span>
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
@@ -61,11 +53,7 @@ const Navbar = () => {
               <div className="flex-1 flex items-center justify-between sm:justify-start">
                 <div className="flex-shrink-0 flex items-center">
                   <Link href="/">
-                    <span className={`text-xl font-bold transition-colors ${
-                      theme === 'light' 
-                        ? 'text-gray-800 hover:text-indigo-600' 
-                        : 'text-gray-100 hover:text-indigo-400'
-                    }`}>
+                    <span className={`text-xl font-bold transition-colors text-gray-100 hover:text-indigo-400`}>
                       Social App
                     </span>
                   </Link>
@@ -91,19 +79,7 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {/* Theme toggle */}
-                <button
-                  type="button"
-                  className="bg-gray-100 dark:bg-gray-700 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition-colors duration-200"
-                  onClick={toggleTheme}
-                >
-                  <span className="sr-only">Toggle theme</span>
-                  {theme === 'dark' ? (
-                    <SunIcon className="h-5 w-5" aria-hidden="true" />
-                  ) : (
-                    <MoonIcon className="h-5 w-5" aria-hidden="true" />
-                  )}
-                </button>
+            
 
                 {/* Notifications */}
                 <div className="relative ml-3">

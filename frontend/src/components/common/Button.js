@@ -1,6 +1,5 @@
 'use client';
 
-import { useTheme } from '../../context/ThemeContext';
 import { motion } from 'framer-motion';
 
 const variants = {
@@ -40,10 +39,9 @@ export const Button = ({
   animate = true,
   ...props
 }) => {
-  const { theme } = useTheme();
 
   const baseClasses = 'inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]';
-  const variantClasses = variants[variant][theme];
+  const variantClasses = variants[variant];
   const sizeClasses = sizes[size];
 
   const buttonVariants = {

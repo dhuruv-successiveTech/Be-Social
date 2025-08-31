@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client/react';
 import { GET_COMMENTS } from '../../graphql/queries';
-import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../hooks/useAuth';
 import { gql } from '@apollo/client';
 
@@ -29,8 +28,6 @@ const CREATE_COMMENT = gql`
 `;
 
 const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
-  const { theme } = useTheme();
-  const { user } = useAuth();
   const [comment, setComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
 
@@ -117,10 +114,10 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
-      <div className={`${theme === 'light' ? 'bg-white' : 'bg-gray-800'} rounded-lg w-full max-w-lg mx-4 overflow-hidden`}>
+      <div className={`bg-gray-800 rounded-lg w-full max-w-lg mx-4 overflow-hidden`}>
         {/* Header */}
         <div className="border-b px-4 py-3 flex justify-between items-center">
-          <h2 className={`font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Comments</h2>
+          <h2 className={`font-semibold text-white`}>Comments</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -129,7 +126,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
         </div>
 
         {/* Original Post */}
-        <div className={`px-4 py-3 border-b ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
+        <div className={`px-4 py-3 border-b border-gray-700`}>
           <div className="flex items-start space-x-3">
             <img
               src={postAuthor.avatar || "https://via.placeholder.com/40"}
@@ -138,7 +135,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
             />
             <div>
               <p className="font-semibold text-sm">{postAuthor.username}</p>
-              <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>{postContent}</p>
+              <p className={`text-sm text-gray-300`}>{postContent}</p>
             </div>
           </div>
         </div>
@@ -149,7 +146,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
             <div className="p-4 text-center">Loading comments...</div>
           ) : (
             data?.getComments.map((comment) => (
-              <div key={comment.id} className={`px-4 py-3 border-b ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
+              <div key={comment.id} className={`px-4 py-3 border-b border-gray-700`}>
                 <div className="flex items-start space-x-3">
                   <img
                     src={comment.author.avatar || "https://via.placeholder.com/40"}
@@ -161,7 +158,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
                       <span className="font-semibold text-sm">{comment.author.username}</span>
                       <span className="text-xs text-gray-500">{timeAgo(comment.createdAt)}</span>
                     </div>
-                    <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>{comment.content}</p>
+                    <p className={`text-sm text-gray-300`}>{comment.content}</p>
                     <div className="mt-1 flex items-center space-x-4 text-xs text-gray-500">
                       <button 
                         onClick={() => setReplyTo(comment.id)}
@@ -187,7 +184,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
                                 <span className="font-semibold text-sm">{reply.author.username}</span>
                                 <span className="text-xs text-gray-500">{timeAgo(reply.createdAt)}</span>
                               </div>
-                              <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>{reply.content}</p>
+                              <p className={`text-sm text-gray-300`}>{reply.content}</p>
                             </div>
                           </div>
                         ))}
@@ -201,7 +198,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
         </div>
 
         {/* Comment Input */}
-        <div className={`p-4 border-t ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
+        <div className={`p-4 border-t border-gray-700`}>
           {replyTo && (
             <div className="mb-2 flex items-center justify-between">
               <span className="text-sm text-blue-500">
@@ -221,11 +218,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Add a comment..."
-              className={`flex-1 rounded-full px-4 py-2 text-sm ${
-                theme === 'light' 
-                  ? 'bg-gray-100 text-gray-900' 
-                  : 'bg-gray-700 text-gray-100'
-              }`}
+              className={`flex-1 rounded-full px-4 py-2 text-sm bg-gray-700 text-gray-100`}
             />
             <button
               type="submit"

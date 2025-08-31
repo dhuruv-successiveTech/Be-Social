@@ -2,10 +2,8 @@
 
 import { useState } from 'react';
 import { Card } from '../common/Card';
-import { useTheme } from '../../context/ThemeContext';
 
 const ShareModal = ({ isOpen, onClose, post }) => {
-  const { theme } = useTheme();
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
@@ -72,7 +70,7 @@ const ShareModal = ({ isOpen, onClose, post }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
       <Card className="w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className={`text-xl font-semibold ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>
+          <h2 className={`text-xl font-semibold text-gray-200`}>
             Share Post
           </h2>
           <button
@@ -91,9 +89,7 @@ const ShareModal = ({ isOpen, onClose, post }) => {
               key={index}
               onClick={option.onClick}
               className={`flex items-center space-x-3 w-full p-3 rounded-lg transition-colors
-                ${theme === 'light' 
-                  ? 'hover:bg-gray-100 text-gray-700' 
-                  : 'hover:bg-gray-700 text-gray-300'}`}
+               hover:bg-gray-700 text-gray-300`}
             >
               {option.icon}
               <span>{option.name}</span>

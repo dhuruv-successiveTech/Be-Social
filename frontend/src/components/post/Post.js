@@ -9,7 +9,6 @@ import { Button } from "../common/Button";
 import { Input } from "../common/Input";
 import CommentList from "../comment/CommentList";
 import toast from "react-hot-toast";
-import { useTheme } from "../../context/ThemeContext";
 import { UPDATE_POST, DELETE_POST } from "../../graphql/mutations/postMutations";
 import { ADD_COMMENT } from "../../graphql/mutations/commentMutations";
 import Spinner from "../shared/Spinner";
@@ -26,7 +25,6 @@ const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const menuRef = useRef(null);
-  const { theme } = useTheme();
   const hasLiked = post.likes?.some(like => like.id === currentUser?.id);
   const isAuthor = post.author.id === currentUser?.id;
 
@@ -141,20 +139,14 @@ const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
   };  return (
     <div 
       className={`rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-300 p-6 mb-4
-        ${theme === 'light' 
-          ? 'bg-white hover:bg-[#FFFAF5] border border-gray-100' 
-          : 'bg-gray-800 hover:bg-gray-750 border border-gray-700'}`}
+       bg-gray-800 hover:bg-gray-750 border border-gray-700`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <img
             src={post.author.avatar || "https://via.placeholder.com/40"}
             alt={post.author.username}
-            className={`w-12 h-12 rounded-full object-cover ring-2 ${
-              theme === 'light' 
-                ? 'ring-indigo-500/20 bg-[#FFF6E9]' 
-                : 'ring-indigo-400/20 bg-gray-700'
-            }`}
+            className={`w-12 h-12 rounded-full object-cover ring-2 ring-indigo-400/20 bg-gray-700`}
           />
           <div>
             <span className="font-semibold hover:text-indigo-500 transition-colors cursor-pointer">

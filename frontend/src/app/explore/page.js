@@ -7,6 +7,9 @@ import Navbar from '../../components/layout/Navbar';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import Spinner from '@/components/shared/Spinner';
 import { useRouter } from 'next/navigation';
+import { Card } from '../../components/common/Card';
+import { motion } from 'framer-motion';
+import { fadeInScale, staggerContainer } from '../../components/common/animations';
 
 export default function Explore() {
   const router = useRouter();
@@ -18,13 +21,12 @@ export default function Explore() {
   
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+     <div className="min-h-screen">
         <Navbar />
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="bg-white rounded-lg shadow p-6">
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <Card className="mb-8" animate hover>
             <SearchUsers />
-          </div>
-          
+          </Card>
           {loading ? (
             <div className="flex justify-center items-center mt-8">
               <Spinner />
@@ -34,39 +36,48 @@ export default function Explore() {
               Error loading media posts
             </div>
           ) : (
-            <div className="mt-8 grid grid-cols-3 gap-4 md:gap-6">
+            <motion.div
+              className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
               {data?.getMediaPosts.map((post) => (
-                <div 
-                  key={post.id} 
-                  className="relative aspect-square group cursor-pointer overflow-hidden rounded-lg"
-                  onClick={() => handlePostClick(post.id)}>
-                  {post.media.map((mediaUrl, index) => {
-                    const isVideo = mediaUrl.toLowerCase().endsWith('.mp4');
-                  console.log(mediaUrl);
-                  
-                    return isVideo ? (
-                      <video 
-                        key={index}
-                        src={mediaUrl}
-                        autoPlay={true}
-                        muted
-                        playsInline
-                        loop
-                        className="w-full h-full  group-hover:scale-110 transition-transform duration-200"
-                      />
-                    ) : (
-                      <img
-                        key={index}
-                        src={mediaUrl}
-                        alt={`Post by ${post.author.username}`}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
-                      />
-                    );
-                  })}
-               
-                </div>
+                <motion.div
+                  key={post.id}
+                  variants={fadeInScale}
+                  whileHover={{ scale: 1.03, boxShadow: "0 8px 32px rgba(99,102,241,0.12)" }}
+                  className="relative aspect-square cursor-pointer overflow-hidden"
+                  onClick={() => handlePostClick(post.id)}
+                >
+                  <Card className="h-full w-full flex items-center justify-center p-0" hover animate>
+                    {post.media.map((mediaUrl, index) => {
+                      const isVideo = mediaUrl.toLowerCase().endsWith('.mp4');
+                      return isVideo ? (
+                        <video
+                          key={index}
+                          src={mediaUrl}
+                          autoPlay={true}
+                          muted
+                          playsInline
+                          loop
+                          className="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300"
+                          style={{objectFit: 'cover', borderRadius: '0.75rem'}}
+                        />
+                      ) : (
+                        <img
+                          key={index}
+                          src={mediaUrl}
+                          alt={`Post by ${post.author.username}`}
+                          className="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300"
+                          style={{objectFit: 'cover', borderRadius: '0.75rem'}}
+                        />
+                      );
+                    })}
+                  </Card>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
       </div>

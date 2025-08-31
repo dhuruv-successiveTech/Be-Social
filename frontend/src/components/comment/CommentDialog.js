@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { gql } from "@apollo/client";
-import { useTheme } from "../../context/ThemeContext";
 import { useMutation } from "@apollo/client/react";
 
 const CREATE_COMMENT_MUTATION = gql`
@@ -22,7 +21,6 @@ const CREATE_COMMENT_MUTATION = gql`
 `;
 
 const CommentDialog = ({ postId, parentCommentId, onClose }) => {
-  const { theme } = useTheme();
   const [commentContent, setCommentContent] = useState("");
   const [createComment, { loading, error }] = useMutation(
     CREATE_COMMENT_MUTATION,
@@ -52,10 +50,8 @@ const CommentDialog = ({ postId, parentCommentId, onClose }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <textarea
-          className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-colors duration-200 ${
-            theme === 'light' 
-              ? 'bg-[#FFFAF5] border-gray-200 text-gray-800 placeholder-gray-500' 
-              : 'bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-500'
+          className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-colors duration-200 
+              bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-500'
           }`}
           rows="4"
           placeholder="Write your comment..."

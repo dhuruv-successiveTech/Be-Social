@@ -7,8 +7,9 @@ import { motion } from "framer-motion";
 
 import { useAuth } from "../../hooks/useAuth";
 import CommentModal from "../comment/CommentModal";
-import { POST_LIKED_SUBSCRIPTION } from "../../graphql/subscriptions";
+import { POST_LIKED_SUBSCRIPTION, POST_UPDATED_SUBSCRIPTION, POST_DELETED_SUBSCRIPTION } from "../../graphql/subscriptions";
 import Post from "./Post";
+import { Card } from '../common/Card';
 
 const GET_FEED = gql`
   query GetFeed($offset: Int, $limit: Int) {
@@ -54,122 +55,6 @@ export const UNLIKE_POST = gql`
   }
 `;
 
-// const Post = ({ post, onLike, currentUser, onCommentClick }) => {
-//   // Added onCommentClick prop
-//   const timeAgo = (date) => {
-//     const timestamp = typeof date === "string" ? parseInt(date) : date; // Ensure it's a number
-//     const now = Date.now();
-//     const seconds = Math.floor((now - timestamp) / 1000);
-
-//     if (seconds < 60) return `${seconds}s ago`;
-
-//     const minutes = Math.floor(seconds / 60);
-//     if (minutes < 60) return `${minutes}m ago`;
-
-//     const hours = Math.floor(minutes / 60);
-//     if (hours < 24) return `${hours}h ago`;
-
-//     const days = Math.floor(hours / 24);
-//     if (days < 30) return `${days}d ago`;
-
-//     const months = Math.floor(days / 30);
-//     if (months < 12) return `${months}mo ago`;
-
-//     const years = Math.floor(months / 12);
-//     return `${years}y ago`;
-//   };
-
-//   const hasLiked = post.likes.some((like) => like.id === currentUser?.id);
-
-//   return (
-//     <div className="bg-white shadow rounded-lg mb-4 p-4">
-//       <div className="flex items-center mb-4">
-//         <img
-//           src={post.author.avatar || "https://via.placeholder.com/40"}
-//           alt={post.author.username}
-//           className="w-10 h-10 rounded-full mr-3"
-//         />
-//         <div>
-//           <Link href={`/profile/${post.author.id}`}>
-//             <span className="font-semibold text-gray-900">
-//               {post.author.username}
-//             </span>
-//           </Link>
-//           <p className="text-gray-500 text-sm">{timeAgo(post.createdAt)}</p>
-//         </div>
-//       </div>
-//       <p className="text-gray-800 mb-4">{post.content}</p>
-//       {console.log("pst",post)}
-      
-//       {post.media && post.media.length > 0 && (
-//         <div className="mb-4">
-//           {post.media.map((url, index) => {
-//             const isVideo = url.match(/\.(mp4|mov|avi|webm)$/) || 
-//                           url.includes('/video/upload/') ||
-//                           url.includes('resource_type=video');
-            
-//             return isVideo ? (
-//               <video
-//                 key={index}
-//                 src={url}
-//                 controls
-//                 className="rounded-lg max-h-96 w-full"
-//                 preload="metadata"
-//               />
-//             ) : (
-//               <img
-//                 key={index}
-//                 src={url}
-//                 alt={`Media ${index + 1}`}
-//                 className="rounded-lg max-h-96 w-full object-cover"
-//               />
-//             );
-//           })}
-//         </div>
-//       )}
-//       <div className="flex items-center space-x-4">
-//         <button
-//           onClick={() => onLike(post.id, hasLiked)}
-//           className="flex items-center text-gray-500 hover:text-blue-600"
-//         >
-//           <svg
-//             className="h-5 w-5 mr-1"
-//             fill={hasLiked ? "currentColor" : "none"}
-//             stroke="currentColor"
-//             viewBox="0 0 24 24"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               strokeWidth={2}
-//               d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-//             />
-//           </svg>
-//           <span>{post?.likes.length}</span>
-//         </button>
-//         <button
-//           onClick={() => onCommentClick(post.id)} // Changed Link to button and added onClick
-//           className="flex items-center text-gray-500 hover:text-blue-600"
-//         >
-//           <svg
-//             className="h-5 w-5 mr-1"
-//             fill="none"
-//             stroke="currentColor"
-//             viewBox="0 0 24 24"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               strokeWidth={2}
-//               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-//             />
-//           </svg>
-//           <span>{post.comments.length}</span>
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
 
 const Feed = () => {
   const { user } = useAuth();
@@ -198,6 +83,43 @@ const Feed = () => {
             }
           }
         });
+      }
+    }
+  });
+
+  // Subscribe to post updates
+  useSubscription(POST_UPDATED_SUBSCRIPTION, {
+    onData: ({ data: { data } }) => {
+      if (data?.postUpdated) {
+        const updatedPost = data.postUpdated;
+        client.cache.modify({
+          id: client.cache.identify({ __typename: 'Post', id: updatedPost.id }),
+          fields: {
+            content() { return updatedPost.content; },
+            updatedAt() { return updatedPost.updatedAt; }
+          }
+        });
+      }
+    }
+  });
+
+  // Subscribe to post deletions
+  useSubscription(POST_DELETED_SUBSCRIPTION, {
+    onData: ({ data: { data } }) => {
+      if (data?.postDeleted) {
+        const deletedPostId = data.postDeleted.id;
+        client.cache.modify({
+          fields: {
+            getFeed(existingPosts = [], { readField }) {
+              return existingPosts.filter(
+                postRef => readField('id', postRef) !== deletedPostId
+              );
+            }
+          }
+        });
+        // Optionally evict the deleted post from cache
+        client.cache.evict({ id: client.cache.identify({ __typename: 'Post', id: deletedPostId }) });
+        client.cache.gc();
       }
     }
   });
@@ -310,13 +232,11 @@ const Feed = () => {
         className="space-y-6"
       >
         {data?.getFeed.map((post, index) => (
-          <motion.div
+          <Card
             key={index}
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              show: { opacity: 1, y: 0 }
-            }}
-            transition={{ duration: 0.5 }}
+            className="p-0 mb-4" // Remove padding so Post controls layout
+            animate
+            hover
           >
             <Post
               post={post}
@@ -324,7 +244,7 @@ const Feed = () => {
               currentUser={user}
               onCommentClick={handleCommentClick}
             />
-          </motion.div>
+          </Card>
         ))}
       </motion.div>
 

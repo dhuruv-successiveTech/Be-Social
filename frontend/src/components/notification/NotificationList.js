@@ -102,22 +102,18 @@ const NotificationItem = ({ notification, onMarkAsRead }) => {
   return (
     <Link href={getNotificationLink()}>
       <div
-        className={`p-4 border-b hover:bg-gray-50 cursor-pointer ${
-          notification.read ? "bg-gray-200" : "bg-white"
-        }`}
+        className={`p-4 border-b-0 mb-3 rounded-xl shadow-sm bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.01] ${notification.read ? "opacity-70" : ""}`}
         onClick={() => !notification.read && onMarkAsRead(notification.id)}
       >
         <div className="flex items-center">
           <img
-            src={
-              notification.sender?.avatar || "https://via.placeholder.com/40"
-            }
+            src={notification.sender?.avatar || "https://via.placeholder.com/40"}
             alt={notification.sender?.username}
-            className="w-10 h-10 rounded-full"
+            className="w-12 h-12 rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover"
           />
-          <div className="ml-3 flex-1">
-            <p className="text-sm text-black ">
-              <span className="font-semibold text-gray-900 dark:text-white">
+          <div className="ml-4 flex-1">
+            <p className="text-base font-medium text-gray-900 dark:text-white">
+              <span className="font-semibold text-indigo-600 dark:text-indigo-300">
                 {notification.sender?.username}
               </span>{" "}
               {getNotificationText()}
@@ -132,7 +128,7 @@ const NotificationItem = ({ notification, onMarkAsRead }) => {
             </p>
           </div>
           {!notification.read && (
-            <div className="w-2 h-2 bg-indigo-500 dark:bg-indigo-400 rounded-full"></div>
+            <div className="w-2 h-2 bg-indigo-500 dark:bg-indigo-400 rounded-full ml-2"></div>
           )}
         </div>
       </div>
@@ -249,15 +245,13 @@ const NotificationList = ({ onClose }) => {
   if (error) return <div>Error loading notifications</div>;
 
   return (
-    <div ref={notificationRef} className="bg-white rounded-lg shadow max-w-2xl mx-auto">
-      <div className="p-4 border-b">
-        <h2 className="text-xl font-semibold">Notifications</h2>
+    <div ref={notificationRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl mx-auto border border-indigo-100 dark:border-indigo-900 p-6 animate-fadeIn">
+      <div className="mb-6 pb-2 border-b border-indigo-100 dark:border-indigo-900">
+        <h2 className="text-2xl font-bold text-indigo-600 dark:text-indigo-300 tracking-tight">Notifications</h2>
       </div>
-      <div className="divide-y">
+      <div>
         {data.getNotifications.length === 0 ? (
-          <div className="p-4 text-center text-gray-500">
-            No notifications yet
-          </div>
+          <div className="p-4 text-center text-gray-500">No notifications yet</div>
         ) : (
           data.getNotifications.map((notification) => (
             <NotificationItem
@@ -268,6 +262,15 @@ const NotificationList = ({ onClose }) => {
           ))
         )}
       </div>
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+      `}</style>
     </div>
   );
 };
