@@ -15,7 +15,7 @@ const postService = {
 
   async getPosts(limit = 10, offset = 0) {
     const posts = await Post.find()
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: -1 }) // Stable sort
       .skip(offset)
       .limit(limit)
       .populate('author')
@@ -34,12 +34,15 @@ const postService = {
         { author: { $in: [...user.following, userId] } },
       ],
     })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: -1 }) // Stable sort
       .skip(offset)
       .limit(limit)
       .populate('author')
       .populate('likes');
     
+    // Debug logging for pagination
+    console.log('[getFeed] offset:', offset, 'limit:', limit, 'returned post IDs:', posts.map(p => p._id.toString()));
+
     return posts;
   },
 

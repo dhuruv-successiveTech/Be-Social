@@ -61,6 +61,7 @@ const Feed = () => {
   const limit = 10;
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [offset, setOffset] = useState(0);
   const client = useApolloClient();
 
   // Subscribe to post likes
@@ -126,6 +127,11 @@ const Feed = () => {
 
   const { loading, error, data, fetchMore } = useQuery(GET_FEED, {
     variables: { offset: 0, limit },
+    onCompleted: (data) => {
+      if (data?.getFeed) {
+        setOffset(data.getFeed.length);
+      }
+    }
   });
 
   const [likePost] = useMutation(LIKE_POST);
@@ -167,9 +173,7 @@ const Feed = () => {
     }
   };
 
-  const handleCommentClick = (postId) => {
-    console.log(postId);
-    
+  const handleCommentClick = (postId) => {    
     const post = data.getFeed.find(p => p.id === postId);
     setSelectedPost(post);
     setShowCommentModal(true);
@@ -179,27 +183,34 @@ const Feed = () => {
     setShowCommentModal(false);
     setSelectedPost(null);
   };
-
+  
   const loadMore = () => {
     fetchMore({
       variables: {
-        offset: data.getFeed.length,
+        offset: offset, // use state offset
         limit,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev;
-
+        if (!fetchMoreResult || fetchMoreResult.getFeed.length === 0) {
+          return prev; // no more posts
+        }
+                
+        // Deduplicate posts by id
         const existingIds = new Set(prev.getFeed.map((p) => p.id));
-        const newPosts = fetchMoreResult.getFeed.filter(
-          (p) => !existingIds.has(p.id)
-        );
-
+        const newPosts = fetchMoreResult.getFeed.filter((p) => !existingIds.has(p.id));
+        console.log(newPosts);
+        
+        const updatedFeed = [...prev.getFeed, ...newPosts];
+        console.log(updatedFeed);
+        
+        setOffset(updatedFeed?.length); // update offset only after deduplication
         return {
-          getFeed: [...prev.getFeed, ...newPosts],
+          getFeed: updatedFeed,
         };
       },
     });
   };
+
 
   if (error) return (
     <motion.div
@@ -231,9 +242,9 @@ const Feed = () => {
         animate="show"
         className="space-y-6"
       >
-        {data?.getFeed.map((post, index) => (
+        {data?.getFeed.map((post) => (
           <Card
-            key={index}
+            key={post.id}
             className="p-0 mb-4" // Remove padding so Post controls layout
             animate
             hover
