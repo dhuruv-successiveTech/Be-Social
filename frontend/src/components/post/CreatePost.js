@@ -6,6 +6,7 @@ import { GET_FEED } from "../../graphql/queries/getFeed";
 import { GET_USER_POSTS } from "../../graphql/queries/getPosts";
 import toast from "react-hot-toast";
 import { useApolloClient } from "@apollo/client/react";
+import Image from "next/image";
 
 const CreatePost = ({ onPostCreated }) => {
   const [content, setContent] = useState("");
@@ -201,11 +202,12 @@ const CreatePost = ({ onPostCreated }) => {
     >
       <form onSubmit={handleSubmit}>
         <div className="flex items-start space-x-4">
-          <img
+          <Image
             src={user?.avatar || "https://via.placeholder.com/40"}
             alt={user?.username}
-            loading="lazy"
-            className={`w-10 h-10 rounded-full ring-2 ring-indigo-500/20 bg-gray-700`}
+            width={40}
+            height={40}
+            className={`rounded-full ring-2 ring-indigo-500/20 bg-gray-700`}
           />
           <div className="flex-1">
             <textarea
@@ -301,10 +303,11 @@ const CreatePost = ({ onPostCreated }) => {
               {mediaFiles.map((file, index) => (
                 <div key={index} className="relative group">
                   {file.type.startsWith("image/") ? (
-                    <img
+                    <Image
                       src={URL.createObjectURL(file)}
                       alt={`Preview ${index + 1}`}
-                      loading="lazy"
+                      width={160}
+                      height={160}
                       className="rounded-lg w-full h-40 object-cover"
                     />
                   ) : (

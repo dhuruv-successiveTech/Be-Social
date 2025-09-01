@@ -1,15 +1,19 @@
-'use client';
+"use client";
 
-import { useQuery } from '@apollo/client/react';
-import { GET_MEDIA_POSTS } from '@/graphql/queries/getPosts';
-import SearchUsers from '../../components/search/SearchUsers';
-import Navbar from '../../components/layout/Navbar';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import Spinner from '@/components/shared/Spinner';
-import { useRouter } from 'next/navigation';
-import { Card } from '../../components/common/Card';
-import { motion } from 'framer-motion';
-import { fadeInScale, staggerContainer } from '../../components/common/animations';
+import { useQuery } from "@apollo/client/react";
+import { GET_MEDIA_POSTS } from "@/graphql/queries/getPosts";
+import SearchUsers from "../../components/search/SearchUsers";
+import Navbar from "../../components/layout/Navbar";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import Spinner from "@/components/shared/Spinner";
+import { useRouter } from "next/navigation";
+import { Card } from "../../components/common/Card";
+import { motion } from "framer-motion";
+import {
+  fadeInScale,
+  staggerContainer,
+} from "../../components/common/animations";
+import Image from "next/image";
 
 export default function Explore() {
   const router = useRouter();
@@ -18,10 +22,10 @@ export default function Explore() {
   const handlePostClick = (postId) => {
     router.push(`/post/${postId}`);
   };
-  
+
   return (
     <ProtectedRoute>
-     <div className="min-h-screen">
+      <div className="min-h-screen">
         <Navbar />
         <div className="max-w-6xl mx-auto px-4 py-6">
           <Card className="mb-8" animate hover>
@@ -46,13 +50,20 @@ export default function Explore() {
                 <motion.div
                   key={post.id}
                   variants={fadeInScale}
-                  whileHover={{ scale: 1.03, boxShadow: "0 8px 32px rgba(99,102,241,0.12)" }}
+                  whileHover={{
+                    scale: 1.03,
+                    boxShadow: "0 8px 32px rgba(99,102,241,0.12)",
+                  }}
                   className="relative aspect-square cursor-pointer overflow-hidden"
                   onClick={() => handlePostClick(post.id)}
                 >
-                  <Card className="h-full w-full flex items-center justify-center p-0" hover animate>
+                  <Card
+                    className="h-full w-full flex items-center justify-center p-0"
+                    hover
+                    animate
+                  >
                     {post.media.map((mediaUrl, index) => {
-                      const isVideo = mediaUrl.toLowerCase().endsWith('.mp4');
+                      const isVideo = mediaUrl.toLowerCase().endsWith(".mp4");
                       return isVideo ? (
                         <video
                           key={index}
@@ -62,15 +73,23 @@ export default function Explore() {
                           playsInline
                           loop
                           className="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300"
-                          style={{objectFit: 'cover', borderRadius: '0.75rem'}}
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: "0.75rem",
+                          }}
                         />
                       ) : (
-                        <img
+                        <Image
                           key={index}
                           src={mediaUrl}
                           alt={`Post by ${post.author.username}`}
+                          width={700}
+                          height={500}
                           className="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300"
-                          style={{objectFit: 'cover', borderRadius: '0.75rem'}}
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: "0.25rem",
+                          }}
                         />
                       );
                     })}

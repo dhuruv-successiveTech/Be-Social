@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { GET_NOTIFICATIONS } from "../../graphql/queries/notification";
 import { NOTIFICATION_SUBSCRIPTION } from "../../graphql/subscriptions/notification";
 import { MARK_NOTIFICATION_AS_READ } from "../../graphql/mutations/notification";
+import Image from "next/image";
 
 const NotificationItem = ({ notification, onMarkAsRead }) => {
   const getNotificationText = () => {
@@ -47,12 +48,13 @@ const NotificationItem = ({ notification, onMarkAsRead }) => {
         onClick={() => !notification.read && onMarkAsRead(notification.id)}
       >
         <div className="flex items-center">
-          <img
+          <Image
             src={
               notification.sender?.avatar || "https://via.placeholder.com/40"
             }
             alt={notification.sender?.username}
-            loading="lazy"
+            width={40}
+            height={40}
             className="w-12 h-12 rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover"
           />
           <div className="ml-4 flex-1">

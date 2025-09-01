@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiImage, FiArrowRight, FiUserPlus } from 'react-icons/fi';
+import Image from 'next/image';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -191,10 +192,12 @@ const RegisterForm = () => {
                   <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700">
                     <label htmlFor="avatar" className="cursor-pointer block w-full h-full">
                       {previewUrl ? (
-                        <img
+                        <Image
                           src={previewUrl}
                           alt="Avatar preview"
                           className="w-full h-full object-cover"
+                          width={96}
+                          height={96}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
@@ -211,15 +214,10 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     className="hidden"
                   />
-                  {/* <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-                    <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      Change
-                    </span>
-                  </div> */}
+                
                 </motion.div>
               </div>
 
-              {/* Username Input */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FiUser className={`h-5 w-5 transition-colors duration-200 ${
@@ -352,16 +350,6 @@ const RegisterForm = () => {
                 className="text-red-500 text-sm text-center bg-red-100 dark:bg-red-900/30 p-3 rounded-lg"
               >
                 {error}
-              </motion.div>
-            )}
-
-            {success && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-green-500 text-sm text-center bg-green-100 dark:bg-green-900/30 p-3 rounded-lg"
-              >
-                Registration successful! Redirecting to login...
               </motion.div>
             )}
 

@@ -18,7 +18,7 @@ export const Card = ({
   const paddingClasses = {
     none: "",
     small: "p-3",
-    normal: "p-6",
+    normal: "p-4",
     large: "p-8",
   }[padding];
 

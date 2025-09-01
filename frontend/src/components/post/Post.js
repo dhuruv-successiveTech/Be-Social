@@ -10,6 +10,8 @@ import { ADD_COMMENT } from "../../graphql/mutations/comment";
 import Spinner from "../shared/Spinner";
 import ShareModal from "./ShareModal";
 import { gql } from "@apollo/client";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
   const [showComments, setShowComments] = useState(false);
@@ -22,6 +24,8 @@ const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
   const menuRef = useRef(null);
   const hasLiked = post.likes?.some(like => like.id === currentUser?.id);
   const isAuthor = post.author.id === currentUser?.id;
+
+  const router = useRouter();
 
   const [updatePost] = useMutation(UPDATE_POST);
   const [deletePost] = useMutation(DELETE_POST);
@@ -145,11 +149,10 @@ const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
             className={`w-12 h-12 rounded-full object-cover ring-2 ring-indigo-400/20 bg-gray-700`}
           />
           <div>
-            <span className="font-semibold hover:text-indigo-500 transition-colors cursor-pointer">
+            <span onClick={() => router.push(`/profile/${post.author.id}`)} className="font-semibold hover:text-indigo-500 transition-colors cursor-pointer">
               {post.author.username}
             </span>
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-         
               {formatTimestamp(post.createdAt)}
             </p>
           </div>
@@ -255,11 +258,12 @@ const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
                   preload="metadata"
                 />
               ) : (
-                <img
+                <Image
                   key={index}
                   src={url}
                   alt={`Media ${index + 1}`}
-                  loading="lazy"
+                  width={500}
+                  height={500}
                   className={mediaClass}
                 />
               );

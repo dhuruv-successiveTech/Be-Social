@@ -16,6 +16,7 @@ import {
   FOLLOW_USER,
   UNFOLLOW_USER,
 } from "../../graphql/mutations/user";
+import Image from "next/image";
 
 
 
@@ -135,11 +136,12 @@ const Profile = ({ userId }) => {
       <Card className="mb-6 p-6" animate hover>
         <div className="flex items-start justify-between">
           <div className="flex items-center">
-            <img
+            <Image
               src={user.avatar || "https://via.placeholder.com/120"}
               alt={user.username}
-              loading="lazy"
-              className="w-24 h-24 rounded-full border-4 border-indigo-100 dark:border-indigo-900 object-cover"
+              width={120}
+              height={120}
+              className="rounded-full border-4 border-indigo-100 dark:border-indigo-900 object-cover"
             />
             <div className="ml-6">
               <h1 className="text-2xl text-gray-900 dark:text-white font-bold">

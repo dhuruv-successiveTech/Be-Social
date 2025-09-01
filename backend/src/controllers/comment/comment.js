@@ -9,7 +9,6 @@ const createComment = async (_, { content, postId, parentCommentId }, context) =
 };
 
 const getCommentsByPostId = async (_, { postId }) => {
-
   return await commentService.getCommentsByPostId(postId);
 };
 

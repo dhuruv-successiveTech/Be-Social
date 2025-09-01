@@ -6,6 +6,7 @@ import { COMMENT_ADDED_SUBSCRIPTION } from "../../graphql/subscriptions/post";
 import { useState } from "react";
 import CommentDialog from "./CommentDialog";
 import { GET_COMMENTS } from "../../graphql/queries/getComment";
+import Image from "next/image";
 
 const CommentList = ({ postId }) => {
   const { data, loading, error } = useQuery(GET_COMMENTS, {
@@ -53,11 +54,12 @@ const comments = data?.getComments
     <div className="space-y-4">
       {comments?.map((comment, index) => (
         <div key={index} className="flex items-start space-x-3">
-          <img
+          <Image
             src={comment.author.avatar || "https://via.placeholder.com/32"}
             alt={comment.author.username}
-            loading="lazy"
-            className="w-8 h-8 rounded-full ring-2 ring-indigo-500/10"
+            width={32}
+            height={32}
+            className="rounded-full ring-2 ring-indigo-500/10"
           />
           <div className="flex-1">
             <div className={` bg-gray-700/50 rounded-lg p-3`}>
@@ -90,11 +92,12 @@ const comments = data?.getComments
                     key={reply.id}
                     className="flex items-start space-x-3 pl-4"
                   >
-                    <img
+                    <Image
                       src={reply.author.avatar || "https://via.placeholder.com/32"}
                       alt={reply.author.username}
-                      loading="lazy"
-                      className="w-6 h-6 rounded-full ring-2 ring-indigo-500/10"
+                      width={24}
+                      height={24}
+                      className="rounded-full ring-2 ring-indigo-500/10"
                     />
                     <div className="flex-1">
                       <div className={`bg-gray-700/50 rounded-lg p-3`}>

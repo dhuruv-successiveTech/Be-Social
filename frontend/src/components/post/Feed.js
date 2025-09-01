@@ -146,14 +146,11 @@ const Feed = () => {
         limit,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-      
         if (!fetchMoreResult || fetchMoreResult.getFeed.length === 0) {
           return prev;
         }
-
         const existingIds = new Set(prev.getFeed.map((p) => p.id));
         const newPosts = fetchMoreResult.getFeed.filter((p) => !existingIds.has(p.id));
-   
         const updatedFeed = [...prev.getFeed, ...newPosts];
         
         return {

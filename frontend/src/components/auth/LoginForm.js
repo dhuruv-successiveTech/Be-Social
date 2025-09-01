@@ -1,27 +1,25 @@
-'use client';
+"use client";
 
-import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
-import { useMutation } from '@apollo/client/react';
-import { useAuth } from '../../hooks/useAuth';
-import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
+import toast from "react-hot-toast";
+import { motion } from "framer-motion";
+import { useMutation } from "@apollo/client/react";
+import { useAuth } from "../../hooks/useAuth";
+import { FiMail, FiLock, FiArrowRight } from "react-icons/fi";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { LOGIN_MUTATION } from '../../graphql/mutations/auth';
-
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { LOGIN_MUTATION } from "../../graphql/mutations/auth";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -30,9 +28,9 @@ const LoginForm = () => {
       transition: {
         duration: 0.6,
         ease: "easeOut",
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
@@ -40,26 +38,26 @@ const LoginForm = () => {
     visible: {
       opacity: 1,
       x: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
   };
 
   const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
     onCompleted: (data) => {
       const { token, refreshToken, user } = data.login;
-      login(user, token, refreshToken); // useAuth will show success toast
-      router.push('/'); // Redirect to home page after successful login
+      login(user, token, refreshToken);
+      router.push("/");
     },
     onError: (error) => {
       setError(error.message);
-      toast.error(error.message || 'Login failed. Please try again.');
+      toast.error(error.message || "Login failed. Please try again.");
     },
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    
+    setError("");
+
     try {
       await loginMutation({
         variables: {
@@ -71,13 +69,11 @@ const LoginForm = () => {
       });
     } catch (err) {
       console.error(err);
-      
     }
   };
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Background Animation */}
       <div className="absolute w-full h-full">
         <motion.div
           className="absolute w-96 h-96 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"
@@ -88,7 +84,7 @@ const LoginForm = () => {
           transition={{
             duration: 10,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
         />
         <motion.div
@@ -100,7 +96,7 @@ const LoginForm = () => {
           transition={{
             duration: 10,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
         />
         <motion.div
@@ -112,7 +108,7 @@ const LoginForm = () => {
           transition={{
             duration: 10,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
         />
       </div>
@@ -131,16 +127,20 @@ const LoginForm = () => {
             >
               Welcome Back
             </motion.h2>
-            <p className="text-gray-500 dark:text-gray-400">Sign in to your account</p>
+            <p className="text-gray-500 dark:text-gray-400">
+              Sign in to your account
+            </p>
           </motion.div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <motion.div variants={itemVariants} className="space-y-4">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiMail className={`h-5 w-5 transition-colors duration-200 ${
-                    isEmailFocused ? 'text-indigo-500' : 'text-gray-400'
-                  }`} />
+                  <FiMail
+                    className={`h-5 w-5 transition-colors duration-200 ${
+                      isEmailFocused ? "text-indigo-500" : "text-gray-400"
+                    }`}
+                  />
                 </div>
                 <input
                   id="email-address"
@@ -162,9 +162,11 @@ const LoginForm = () => {
 
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiLock className={`h-5 w-5 transition-colors duration-200 ${
-                    isPasswordFocused ? 'text-indigo-500' : 'text-gray-400'
-                  }`} />
+                  <FiLock
+                    className={`h-5 w-5 transition-colors duration-200 ${
+                      isPasswordFocused ? "text-indigo-500" : "text-gray-400"
+                    }`}
+                  />
                 </div>
                 <input
                   id="password"
@@ -209,7 +211,11 @@ const LoginForm = () => {
                 {loading ? (
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
                     className="w-6 h-6 border-2 border-white rounded-full border-t-transparent"
                   />
                 ) : (
@@ -223,7 +229,7 @@ const LoginForm = () => {
 
             <motion.div variants={itemVariants} className="text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Don&apos;t have an account?{' '}
+                Don&apos;t have an account?{" "}
                 <Link
                   href="/register"
                   className="font-medium text-indigo-600 hover:text-indigo-500 

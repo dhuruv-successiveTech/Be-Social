@@ -9,6 +9,7 @@ import CommentList from "@/components/comment/CommentList";
 import { formatDistanceToNow } from "date-fns";
 import ProtectedRoute from "../../../components/auth/ProtectedRoute";
 import { Card } from "@/components/common/Card";
+import Image from "next/image";
 
 export default function PostDetail() {
   const params = useParams();
@@ -49,10 +50,12 @@ export default function PostDetail() {
           <Card className="p-8 animate-fadeIn" animate hover>
             {/* Author info */}
             <div className="flex items-center mb-6">
-              <img
+              <Image
                 src={post.author.avatar || "/default-media-placeholder.jpg"}
                 alt={post.author.username}
                 className="w-12 h-12 rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover"
+                width={48}
+                height={48}
               />
               <div className="ml-4">
                 <p className="font-semibold text-indigo-600 dark:text-indigo-300 text-lg">{post.author.username}</p>
@@ -76,11 +79,13 @@ export default function PostDetail() {
                     className="w-full h-[28rem] rounded-xl shadow object-cover"
                   />
                 ) : (
-                  <img
+                  <Image
                     key={index}
                     src={mediaUrl}
                     alt={`Post content ${index + 1}`}
                     className="w-full h-[28rem] object-cover rounded-xl shadow"
+                    width={700}
+                    height={500}
                   />
                 );
               })}

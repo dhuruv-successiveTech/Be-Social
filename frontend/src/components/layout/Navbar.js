@@ -13,6 +13,7 @@ import { useAuth } from "../../hooks/useAuth";
 import NotificationList from "../notification/NotificationList";
 import { useQuery } from "@apollo/client/react";
 import { GET_UNREAD_NOTIFICATION_COUNT } from "../../graphql/queries/getUnreadNotificationCount";
+import Image from "next/image";
 
 const navigation = [
   { name: "Home", href: "/", current: true, icon: HomeIcon },
@@ -106,11 +107,12 @@ const Navbar = () => {
                   <div>
                     <Menu.Button className="bg-gray-100 dark:bg-gray-700 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 p-0.5 transition-colors duration-200">
                       <span className="sr-only">Open user menu</span>
-                      <img
+                      <Image
                         className="h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
                         src={user?.avatar || "https://via.placeholder.com/40"}
                         alt=""
-                        loading="lazy"
+                        width={32}
+                        height={32}
                       />
                     </Menu.Button>
                   </div>

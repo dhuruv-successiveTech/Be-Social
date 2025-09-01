@@ -12,6 +12,7 @@ import { fadeInScale, slideIn, staggerContainer } from "../common/animations";
 import { GET_CHAT, GET_CHATS, GET_CURRENT_USER_FOLLOWING } from "../../graphql/queries/chat";
 import { SEND_MESSAGE, CREATE_CHAT } from "../../graphql/mutations/chat";
 import { MESSAGE_SUBSCRIPTION } from "../../graphql/subscriptions/chat";
+import Image from "next/image";
 
 
 
@@ -62,7 +63,7 @@ const ChatList = ({ chats, selectedChatId, onSelectChat, currentUser }) => (
             </div>
           ) : (
             <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-              <img
+              <Image
                 src={
                   chat.participants.find((p) => p.id !== currentUser.id)
                     ?.avatar || "/default-media-placeholder.jpg"
@@ -71,8 +72,9 @@ const ChatList = ({ chats, selectedChatId, onSelectChat, currentUser }) => (
                   chat.participants.find((p) => p.id !== currentUser.id)
                     ?.username
                 }
-                loading="lazy"
                 className="w-full h-full object-cover"
+                width={48}
+                height={48}
               />
             </div>
           )}
@@ -256,10 +258,11 @@ const ChatContainer = () => {
                     >
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-                          <img
+                          <Image
                             src={f.avatar || "/default-media-placeholder.jpg"}
                             alt={f.username}
-                            loading="lazy"
+                            width={40}
+                            height={40}
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -297,13 +300,14 @@ const ChatContainer = () => {
                       </div>
                     ) : (
                       <div className="w-10 h-10 rounded-full overflow-hidden">
-                        <img
+                        <Image
                           src={
                             chat.participants.find((p) => p.id !== user.id)
                               ?.avatar || "/default-media-placeholder.jpg"
                           }
                           alt="avatar"
-                          loading="lazy"
+                          width={40}
+                          height={40}
                           className="w-full h-full object-cover"
                         />
                       </div>

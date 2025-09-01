@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client/react';
 import { GET_COMMENTS } from '../../graphql/queries/getComment';
 import { gql } from '@apollo/client';
+import Image from 'next/image';
 
 const CREATE_COMMENT = gql`
   mutation CreateComment($postId: ID!, $content: String!, $parentCommentId: ID) {
@@ -127,11 +128,12 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
         {/* Original Post */}
         <div className={`px-4 py-3 border-b border-gray-700`}>
           <div className="flex items-start space-x-3">
-            <img
+            <Image
               src={postAuthor.avatar || "https://via.placeholder.com/40"}
               alt={postAuthor.username}
-              loading="lazy"
-              className="w-8 h-8 rounded-full"
+              width={32}
+              height={32}
+              className="rounded-full"
             />
             <div>
               <p className="font-semibold text-sm">{postAuthor.username}</p>
@@ -148,11 +150,12 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
             data?.getComments.map((comment) => (
               <div key={comment.id} className={`px-4 py-3 border-b border-gray-700`}>
                 <div className="flex items-start space-x-3">
-                  <img
+                  <Image
                     src={comment.author.avatar || "https://via.placeholder.com/40"}
                     alt={comment.author.username}
-                    loading="lazy"
-                    className="w-8 h-8 rounded-full"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
                   />
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
@@ -175,11 +178,12 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
                       <div className="ml-8 mt-2 space-y-2">
                         {comment.replies.map((reply) => (
                           <div key={reply.id} className="flex items-start space-x-2">
-                            <img
+                            <Image
                               src={reply.author.avatar || "https://via.placeholder.com/40"}
                               alt={reply.author.username}
-                              loading="lazy"
-                              className="w-6 h-6 rounded-full"
+                              width={24}
+                              height={24}
+                              className="rounded-full"
                             />
                             <div>
                               <div className="flex items-center space-x-2">

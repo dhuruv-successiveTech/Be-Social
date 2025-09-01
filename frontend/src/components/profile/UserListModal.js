@@ -1,6 +1,7 @@
 
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 const UserListModal = ({ users, title, onClose }) => {
@@ -20,11 +21,12 @@ const UserListModal = ({ users, title, onClose }) => {
         <div className="space-y-5">
           {users.map((user) => (
             <div key={user.id} className="flex items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 shadow hover:shadow-lg transition-all duration-200">
-              <img
+              <Image
                 src={user.avatar || "https://via.placeholder.com/40"}
                 alt={user.username}
-                loading="lazy"
-                className="w-12 h-12 rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover mr-4"
+                width={40}
+                height={40}
+                className="rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover mr-4"
               />
               <div>
                 <Link href={`/profile/${user.id}`}>

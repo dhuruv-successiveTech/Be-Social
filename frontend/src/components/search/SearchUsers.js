@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
 import { Card } from "../common/Card";
 import { SEARCH_USERS } from "../../graphql/queries/user";
+import Image from "next/image";
 
 const SearchUsers = () => {
   const [query, setQuery] = useState("");
@@ -74,11 +75,12 @@ const SearchUsers = () => {
               onMouseDown={() => router.push(`/profile/${user.id}`)}
             >
               <div className="flex items-center">
-                <img
+                <Image
                   src={user.avatar || "https://via.placeholder.com/40"}
                   alt={user.username}
-                  loading="lazy"
-                  className="w-12 h-12 rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover"
+                  width={48}
+                  height={48}
+                  className="rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover"
                 />
                 <div className="ml-4 flex-1">
                   <h3 className="font-semibold text-gray-900 dark:text-white">
