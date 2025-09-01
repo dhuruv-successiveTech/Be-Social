@@ -1,9 +1,9 @@
 import { Fragment, useState } from "react";
 import Link from "next/link";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { 
-  BellIcon, 
-  Bars3Icon, 
+import {
+  BellIcon,
+  Bars3Icon,
   XMarkIcon,
   HomeIcon,
   GlobeAltIcon,
@@ -14,16 +14,7 @@ import NotificationList from "../notification/NotificationList";
 import { useQuery } from "@apollo/client/react";
 import { GET_UNREAD_NOTIFICATION_COUNT } from "../../graphql/queries/getUnreadNotificationCount";
 import Image from "next/image";
-
-const navigation = [
-  { name: "Home", href: "/", current: true, icon: HomeIcon },
-  { name: "Explore", href: "/explore", current: false, icon: GlobeAltIcon },
-  { name: "Messages", href: "/messages", current: false, icon: ChatBubbleOvalLeftIcon },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -31,9 +22,21 @@ const Navbar = () => {
   const { data } = useQuery(GET_UNREAD_NOTIFICATION_COUNT);
   const unreadCount = data?.getUnreadNotificationCount;
 
+  const pathname = usePathname();
   const handleCloseNotifications = () => {
     setShowNotifications(false);
   };
+  console.log(pathname);
+  
+  const navigation = [
+    { name: "Home", href: "/", current: pathname === "/", icon: HomeIcon },
+    { name: "Explore", href: "/explore", current: pathname === "/explore", icon: GlobeAltIcon },
+    { name: "Messages", href: "/messages", current: pathname === "/messages", icon: ChatBubbleOvalLeftIcon },
+  ];
+
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(" ");
+  }
 
   return (
     <Disclosure as="nav" className={`bg-gray-800 text-gray-100 shadow-cool shadow-md sticky top-0 z-50 transition-all duration-200`}>
@@ -80,8 +83,6 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            
-
                 {/* Notifications */}
                 <div className="relative ml-3">
                   <button
@@ -163,9 +164,8 @@ const Navbar = () => {
           <Disclosure.Panel className="sm:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => (
-                <Disclosure.Button
+                <Link
                   key={item.name}
-                  as="a"
                   href={item.href}
                   className={classNames(
                     item.current
@@ -176,7 +176,7 @@ const Navbar = () => {
                   aria-current={item.current ? "page" : undefined}
                 >
                   {item.name}
-                </Disclosure.Button>
+                </Link>
               ))}
             </div>
           </Disclosure.Panel>

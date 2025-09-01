@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
 export const PageBackground = ({ children }) => (
-  <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+  <div className=" bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
     {/* Background Animation */}
     <div className="fixed inset-0 overflow-hidden">
       <motion.div

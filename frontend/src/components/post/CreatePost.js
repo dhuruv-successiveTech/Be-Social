@@ -205,9 +205,9 @@ const CreatePost = ({ onPostCreated }) => {
           <Image
             src={user?.avatar || "https://via.placeholder.com/40"}
             alt={user?.username}
-            width={40}
-            height={40}
-            className={`rounded-full ring-2 ring-indigo-500/20 bg-gray-700`}
+            width={90}
+            height={90}
+            className={`rounded-4xl ring-2 ring-indigo-500/20 bg-gray-700`}
           />
           <div className="flex-1">
             <textarea

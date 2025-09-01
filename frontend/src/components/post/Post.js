@@ -142,7 +142,9 @@ const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <img
+          <Image
+            width={48}
+            height={48}
             src={post.author.avatar || "https://via.placeholder.com/40"}
             alt={post.author.username}
             loading="lazy"

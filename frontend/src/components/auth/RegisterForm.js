@@ -18,7 +18,6 @@ const RegisterForm = () => {
     avatar: null,
   });
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -92,15 +91,12 @@ const RegisterForm = () => {
     if (formData.avatar) {
       data.append('avatar', formData.avatar);
     }
-    console.log(formData);
-    
 
     try {
       const response = await fetch('http://localhost:4000/register-with-avatar', { // Use the new REST endpoint
         method: 'POST',
         body: data,
       });
-      console.log(response);
       
       const result = await response.json();
 
@@ -108,7 +104,6 @@ const RegisterForm = () => {
         throw new Error(result.message || 'Registration failed');
       }
 
-      setSuccess(true);
       toast.success('Registration successful! Redirecting to login...');
       setTimeout(() => {
         router.push('/login');

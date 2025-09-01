@@ -1,10 +1,8 @@
 "use client";
 
-import { gql } from "@apollo/client";
 import { useQuery, useMutation, useSubscription, useApolloClient } from "@apollo/client/react";
 import { useState } from "react";
 import { motion } from "framer-motion";
-
 import { useAuth } from "../../hooks/useAuth";
 import CommentModal from "../comment/CommentModal";
 import { POST_LIKED_SUBSCRIPTION, POST_UPDATED_SUBSCRIPTION, POST_DELETED_SUBSCRIPTION } from "../../graphql/subscriptions/post";
@@ -12,8 +10,6 @@ import Post from "./Post";
 import { Card } from '../common/Card';
 import { GET_FEED } from "../../graphql/queries/getFeed";
 import { LIKE_POST, UNLIKE_POST } from "../../graphql/mutations/post";
-
-
 
 const Feed = () => {
   const { user } = useAuth();
