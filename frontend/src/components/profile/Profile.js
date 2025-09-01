@@ -1,74 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { gql } from "@apollo/client";
-import { useQuery, useMutation, useSubscription } from "@apollo/client/react";
-import { POST_DELETED_SUBSCRIPTION, POST_UPDATED_SUBSCRIPTION } from "../../graphql/subscriptions/postSubscriptions";
+import { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+
 import { useAuth } from "../../hooks/useAuth";
 import UserListModal from "./UserListModal";
-import { GET_USER_POSTS } from "../../graphql/queries";
+import { GET_USER_POSTS } from "../../graphql/queries/getPosts";
 import Post from "../post/Post";
-import { Card } from '../common/Card';
-import { LIKE_POST, UNLIKE_POST } from "../post/Feed";
+import { Card } from "../common/Card";
+import { LIKE_POST, UNLIKE_POST } from "../../graphql/mutations/post";
 import client from "../../apollo/client";
+import { GET_USER_PROFILE } from "../../graphql/queries/user";
+import {
+  UPDATE_PROFILE,
+  FOLLOW_USER,
+  UNFOLLOW_USER,
+} from "../../graphql/mutations/user";
 
-const GET_USER_PROFILE = gql`
-  query GetUser($id: ID!) {
-    getUser(id: $id) {
-      id
-      username
-      name
-      bio
-      avatar
-      followers {
-        id
-        username
-        name
-        avatar
-      }
-      following {
-        id
-        username
-        name
-        avatar
-      }
-    }
-  }
-`;
 
-const UPDATE_PROFILE = gql`
-  mutation UpdateProfile($bio: String, $avatar: String) {
-    updateProfile(bio: $bio, avatar: $avatar) {
-      id
-      bio
-      avatar
-    }
-  }
-`;
-
-const FOLLOW_USER = gql`
-  mutation FollowUser($userId: ID!) {
-    followUser(userId: $userId) {
-      id
-      followers {
-        id
-        username
-      }
-    }
-  }
-`;
-
-const UNFOLLOW_USER = gql`
-  mutation UnfollowUser($userId: ID!) {
-    unfollowUser(userId: $userId) {
-      id
-      followers {
-        id
-        username
-      }
-    }
-  }
-`;
 
 const Profile = ({ userId }) => {
   const { user: currentUser } = useAuth();
@@ -117,8 +66,7 @@ const Profile = ({ userId }) => {
     }
   };
 
- 
-   const handleLike = async (postId, hasLiked) => {
+  const handleLike = async (postId, hasLiked) => {
     try {
       if (hasLiked) {
         await unlikePost({
@@ -190,12 +138,21 @@ const Profile = ({ userId }) => {
             <img
               src={user.avatar || "https://via.placeholder.com/120"}
               alt={user.username}
+              loading="lazy"
               className="w-24 h-24 rounded-full border-4 border-indigo-100 dark:border-indigo-900 object-cover"
             />
             <div className="ml-6">
-              <h1 className="text-2xl text-gray-900 dark:text-white font-bold">{user.name}</h1>
-              <p className="text-indigo-500 dark:text-indigo-300">@{user.username}</p>
-              {!isEditing && <p className="mt-2 text-gray-700 dark:text-gray-300">{user.bio}</p>}
+              <h1 className="text-2xl text-gray-900 dark:text-white font-bold">
+                {user.name}
+              </h1>
+              <p className="text-indigo-500 dark:text-indigo-300">
+                @{user.username}
+              </p>
+              {!isEditing && (
+                <p className="mt-2 text-gray-700 dark:text-gray-300">
+                  {user.bio}
+                </p>
+              )}
             </div>
           </div>
           {isCurrentUser ? (
@@ -222,7 +179,9 @@ const Profile = ({ userId }) => {
         {isEditing && (
           <form onSubmit={handleUpdateProfile} className="mt-6">
             <div className="mb-4">
-              <label className="block text-gray-700 dark:text-gray-300 mb-2">Bio</label>
+              <label className="block text-gray-700 dark:text-gray-300 mb-2">
+                Bio
+              </label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
@@ -231,7 +190,9 @@ const Profile = ({ userId }) => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 dark:text-gray-300 mb-2">Avatar URL</label>
+              <label className="block text-gray-700 dark:text-gray-300 mb-2">
+                Avatar URL
+              </label>
               <input
                 type="text"
                 value={avatar}
@@ -253,15 +214,23 @@ const Profile = ({ userId }) => {
             className="cursor-pointer"
             onClick={() => openModal("Followers", user.followers)}
           >
-            <span className="text-indigo-500 dark:text-indigo-300 font-bold">{user.followers.length}</span>
-            <span className="text-gray-600 dark:text-gray-400 font-bold ml-1">Followers</span>
+            <span className="text-indigo-500 dark:text-indigo-300 font-bold">
+              {user.followers.length}
+            </span>
+            <span className="text-gray-600 dark:text-gray-400 font-bold ml-1">
+              Followers
+            </span>
           </div>
           <div
             className="cursor-pointer"
             onClick={() => openModal("Following", user.following)}
           >
-            <span className="text-indigo-500 dark:text-indigo-300 font-bold">{user.following.length}</span>
-            <span className="text-gray-600 dark:text-gray-400 font-bold ml-1">Following</span>
+            <span className="text-indigo-500 dark:text-indigo-300 font-bold">
+              {user.following.length}
+            </span>
+            <span className="text-gray-600 dark:text-gray-400 font-bold ml-1">
+              Following
+            </span>
           </div>
         </div>
       </Card>
@@ -276,11 +245,17 @@ const Profile = ({ userId }) => {
 
       {/* User's Posts */}
       <div className="mt-8">
-        <h2 className="text-2xl text-gray-900 dark:text-white font-bold mb-4">Posts</h2>
+        <h2 className="text-2xl text-gray-900 dark:text-white font-bold mb-4">
+          Posts
+        </h2>
         {postsLoading ? (
-          <Card className="p-4 text-center" animate>Loading posts...</Card>
+          <Card className="p-4 text-center" animate>
+            Loading posts...
+          </Card>
         ) : postsError ? (
-          <Card className="p-4 text-center text-red-500" animate>Error loading posts</Card>
+          <Card className="p-4 text-center text-red-500" animate>
+            Error loading posts
+          </Card>
         ) : (
           <div className="space-y-6">
             {postsData?.getUserPosts.map((post) => (
@@ -292,19 +267,21 @@ const Profile = ({ userId }) => {
                   onPostDelete={(postId) => {
                     const currentPosts = client.readQuery({
                       query: GET_USER_POSTS,
-                      variables: { userId, offset: 0, limit: 10 }
+                      variables: { userId, offset: 0, limit: 10 },
                     });
                     client.writeQuery({
                       query: GET_USER_POSTS,
                       variables: { userId, offset: 0, limit: 10 },
                       data: {
-                        getUserPosts: currentPosts.getUserPosts.filter(p => p.id !== postId)
-                      }
+                        getUserPosts: currentPosts.getUserPosts.filter(
+                          (p) => p.id !== postId
+                        ),
+                      },
                     });
                   }}
                   onPostUpdate={() => {
                     client.refetchQueries({
-                      include: [GET_USER_POSTS]
+                      include: [GET_USER_POSTS],
                     });
                   }}
                 />
@@ -315,54 +292,5 @@ const Profile = ({ userId }) => {
       </div>
     </div>
   );
-
-  // Subscribe to post updates and deletions
-  // Subscribe to post deletions
-  useSubscription(POST_DELETED_SUBSCRIPTION, {
-    onData: ({ data }) => {
-      if (data?.data?.postDeleted) {
-        const deletedPostId = data.data.postDeleted.id;
-        
-        // Update cache to remove the deleted post
-        client.cache.modify({
-          fields: {
-            getUserPosts(existingPosts = [], { readField }) {
-              return existingPosts.filter(
-                postRef => readField('id', postRef) !== deletedPostId
-              );
-            },
-            getFeed(existingPosts = [], { readField }) {
-              return existingPosts.filter(
-                postRef => readField('id', postRef) !== deletedPostId
-              );
-            }
-          }
-        });
-      }
-    }
-  });
-
-  // Subscribe to post updates
-  useSubscription(POST_UPDATED_SUBSCRIPTION, {
-    onData: ({ data }) => {
-      if (data?.data?.postUpdated) {
-        const updatedPost = data.data.postUpdated;
-        
-        // Update cache with the new post content
-        client.cache.modify({
-          id: `Post:${updatedPost.id}`,
-          fields: {
-            content() {
-              return updatedPost.content;
-            },
-            updatedAt() {
-              return updatedPost.updatedAt;
-            }
-          }
-        });
-      }
-    }
-  });
 };
-
 export default Profile;

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client/react';
-import { GET_USER_POSTS } from '../graphql/queries/getUserPosts';
+import { GET_USER_POSTS } from '../graphql/queries/getFeed';
 
 export const useUserPosts = (userId, limit = 10) => {
   const { data, loading, error, fetchMore } = useQuery(GET_USER_POSTS, {

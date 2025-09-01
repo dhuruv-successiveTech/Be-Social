@@ -1,40 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
-import { gql } from "@apollo/client";
 import { useSubscription } from "@apollo/client/react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { NOTIFICATION_SUBSCRIPTION } from "../../graphql/subscriptions/notification";
 
-// GraphQL subscription
-const NOTIFICATION_SUBSCRIPTION = gql`
-  subscription NotificationReceived {
-    notificationReceived {
-      id
-      type
-      sender {
-        id
-        username
-      }
-      post {
-        id
-      }
-      comment {
-        id
-      }
-      chat {
-        id
-      }
-      read
-      createdAt
-    }
-  }
-`;
 
 const NotificationDisplay = () => {
   const router = useRouter();
 
-  const { data, loading, error } = useSubscription(NOTIFICATION_SUBSCRIPTION);
+  const { data, error } = useSubscription(NOTIFICATION_SUBSCRIPTION);
   console.log("hello", data);
 
   useEffect(() => {

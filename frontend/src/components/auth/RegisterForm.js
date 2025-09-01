@@ -6,10 +6,6 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiImage, FiArrowRight, FiUserPlus } from 'react-icons/fi';
-// import { gql } from '@apollo/client';
-// import { useMutation } from '@apollo/client/react';
-
-// Removed REGISTER_MUTATION
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -95,13 +91,16 @@ const RegisterForm = () => {
     if (formData.avatar) {
       data.append('avatar', formData.avatar);
     }
+    console.log(formData);
+    
 
     try {
       const response = await fetch('http://localhost:4000/register-with-avatar', { // Use the new REST endpoint
         method: 'POST',
         body: data,
       });
-
+      console.log(response);
+      
       const result = await response.json();
 
       if (!response.ok) {
@@ -212,11 +211,11 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     className="hidden"
                   />
-                  <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                  {/* <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
                     <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       Change
                     </span>
-                  </div>
+                  </div> */}
                 </motion.div>
               </div>
 

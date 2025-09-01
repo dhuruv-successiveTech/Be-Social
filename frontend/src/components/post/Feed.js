@@ -2,66 +2,24 @@
 
 import { gql } from "@apollo/client";
 import { useQuery, useMutation, useSubscription, useApolloClient } from "@apollo/client/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 import { useAuth } from "../../hooks/useAuth";
 import CommentModal from "../comment/CommentModal";
-import { POST_LIKED_SUBSCRIPTION, POST_UPDATED_SUBSCRIPTION, POST_DELETED_SUBSCRIPTION } from "../../graphql/subscriptions";
+import { POST_LIKED_SUBSCRIPTION, POST_UPDATED_SUBSCRIPTION, POST_DELETED_SUBSCRIPTION } from "../../graphql/subscriptions/post";
 import Post from "./Post";
 import { Card } from '../common/Card';
+import { GET_FEED } from "../../graphql/queries/getFeed";
+import { LIKE_POST, UNLIKE_POST } from "../../graphql/mutations/post";
 
-const GET_FEED = gql`
-  query GetFeed($offset: Int, $limit: Int) {
-    getFeed(offset: $offset, limit: $limit) {
-      id
-      content
-      media
-      createdAt
-      author {
-        id
-        username
-        avatar
-      }
-      likes {
-        id
-      }
-      comments {
-        id
-      }
-    }
-  }
-`;
-
-export const LIKE_POST = gql`
-  mutation LikePost($postId: ID!) {
-    likePost(postId: $postId) {
-      id
-      likes {
-        id
-      }
-    }
-  }
-`;
-
-export const UNLIKE_POST = gql`
-  mutation UnlikePost($postId: ID!) {
-    unlikePost(postId: $postId) {
-      id
-      likes {
-        id
-      }
-    }
-  }
-`;
 
 
 const Feed = () => {
   const { user } = useAuth();
-  const limit = 10;
+  const limit = 30;
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
-  const [offset, setOffset] = useState(0);
   const client = useApolloClient();
 
   // Subscribe to post likes
@@ -73,13 +31,13 @@ const Feed = () => {
         client.cache.modify({
           id: client.cache.identify({ __typename: 'Post', id: likedPost.id }),
           fields: {
-            likes(existingLikes = []) {
+            likes() {
               return likedPost.likes;
             },
-            likesCount(existingCount) {
+            likesCount() {
               return likedPost.likes.length;
             },
-            isLiked(existingIsLiked) {
+            isLiked() {
               return likedPost.likes.some(like => like.id === user?.id);
             }
           }
@@ -127,12 +85,9 @@ const Feed = () => {
 
   const { loading, error, data, fetchMore } = useQuery(GET_FEED, {
     variables: { offset: 0, limit },
-    onCompleted: (data) => {
-      if (data?.getFeed) {
-        setOffset(data.getFeed.length);
-      }
-    }
   });
+ 
+    
 
   const [likePost] = useMutation(LIKE_POST);
   const [unlikePost] = useMutation(UNLIKE_POST);
@@ -187,23 +142,20 @@ const Feed = () => {
   const loadMore = () => {
     fetchMore({
       variables: {
-        offset: offset, // use state offset
+        offset: data.getFeed.length,
         limit,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
+      
         if (!fetchMoreResult || fetchMoreResult.getFeed.length === 0) {
-          return prev; // no more posts
+          return prev;
         }
-                
-        // Deduplicate posts by id
+
         const existingIds = new Set(prev.getFeed.map((p) => p.id));
         const newPosts = fetchMoreResult.getFeed.filter((p) => !existingIds.has(p.id));
-        console.log(newPosts);
-        
+   
         const updatedFeed = [...prev.getFeed, ...newPosts];
-        console.log(updatedFeed);
         
-        setOffset(updatedFeed?.length); // update offset only after deduplication
         return {
           getFeed: updatedFeed,
         };

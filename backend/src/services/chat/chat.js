@@ -1,5 +1,5 @@
-const Chat = require('../../models/chat/chat.model');
-const User = require('../../models/user/user.model');
+const Chat = require('../../models/chat/chat');
+const User = require('../../models/user/user');
 const { UserInputError, AuthenticationError } = require('apollo-server-express');
 const { PubSub } = require('graphql-subscriptions');
 

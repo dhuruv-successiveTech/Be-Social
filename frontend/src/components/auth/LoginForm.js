@@ -9,24 +9,8 @@ import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { gql } from '@apollo/client';
+import { LOGIN_MUTATION } from '../../graphql/mutations/auth';
 
-const LOGIN_MUTATION = gql`
-  mutation Login($input: LoginInput!) {
-    login(input: $input) {
-      token
-      refreshToken
-      user {
-        id
-        username
-        email
-        name
-        avatar
-        role
-      }
-    }
-  }
-`;
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -239,7 +223,7 @@ const LoginForm = () => {
 
             <motion.div variants={itemVariants} className="text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <Link
                   href="/register"
                   className="font-medium text-indigo-600 hover:text-indigo-500 

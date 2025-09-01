@@ -1,5 +1,4 @@
 "use client";
-import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/layout/Navbar";
 import CreatePost from "../components/post/CreatePost";
 import Feed from "../components/post/Feed";

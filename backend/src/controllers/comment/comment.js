@@ -1,4 +1,4 @@
-const commentService = require('../../services/comment/comment.service');
+const commentService = require('../../services/comment/comment');
 
 const createComment = async (_, { content, postId, parentCommentId }, context) => {
   if (!context.user) {

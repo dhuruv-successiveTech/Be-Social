@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { UserInputError } = require('apollo-server-express');
-const User = require('../../models/user/user.model');
-const { generateTokens } = require('../../services/auth/auth.service');
+const User = require('../../models/user/user');
+const { generateTokens } = require('../../services/auth/auth');
 
 const authController = {
   async register(username, email, password, name, avatar = null) { // Added avatar parameter

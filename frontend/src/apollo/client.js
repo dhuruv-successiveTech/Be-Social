@@ -10,8 +10,7 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-      
-        // Keeping other policies as they were, assuming they are correct for their features.
+        
         getMediaPosts: {
           keyArgs: false,
           merge(existing = [], incoming) {

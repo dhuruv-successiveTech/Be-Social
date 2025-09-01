@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/hooks/useUserPosts.js", "src/hooks/usePosts.js", "src/graphql/queries/getPosts.js", "src/graphql/queries/getUserPosts.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/hooks/useUserPosts.js", "src/hooks/usePosts.js", "src/graphql/queries/getPosts.js", "src/graphql/queries/getFeed.js"],
   "exclude": ["node_modules"]
 }

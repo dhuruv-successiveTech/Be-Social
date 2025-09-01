@@ -1,12 +1,12 @@
 const { UserInputError, AuthenticationError } = require('apollo-server-express');
 const { PubSub } = require('graphql-subscriptions');
-const authController = require('../controllers/auth/auth.controller');
-const userService = require('../services/user/user.service');
-const postService = require('../services/post/post.service');
-const chatService = require('../services/chat/chat.service');
-const notificationService = require('../services/notification/notification.service');
-const commentController = require('../controllers/comment/comment.controller');
-const { verifyToken } = require('../services/auth/auth.service');
+const authController = require('../controllers/auth/auth');
+const userService = require('../services/user/user');
+const postService = require('../services/post/post');
+const chatService = require('../services/chat/chat');
+const notificationService = require('../services/notification/notification');
+const commentController = require('../controllers/comment/comment');
+const { verifyToken } = require('../services/auth/auth');
 
 const pubsub = new PubSub();
 
@@ -84,7 +84,7 @@ const resolvers = {
       input.username,
       input.email,
       input.password,
-      input.name
+      input.name,
     ),
     login: (_, { input }) => authController.login(input.email, input.password),
     refreshToken: async (_, { token }) => authController.refreshToken(token),

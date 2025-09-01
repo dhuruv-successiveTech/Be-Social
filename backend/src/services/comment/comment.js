@@ -1,5 +1,5 @@
-const Comment = require("../../models/comment/comment.model");
-const Post = require("../../models/post/post.model");
+const Comment = require("../../models/comment/comment");
+const Post = require("../../models/post/post");
 
 const createComment = async (
   content,
@@ -8,7 +8,7 @@ const createComment = async (
   parentCommentId = null
 ) => {
   try {
-    console.log(content);
+ 
     
     const newComment = new Comment({
       content,
@@ -24,7 +24,6 @@ const createComment = async (
     await Post.findByIdAndUpdate(postId, {
       $push: { comments: newComment._id },
     });
-    console.log(newComment);
     
     // If it's a reply, update the parent comment
     if (parentCommentId) {
@@ -55,7 +54,6 @@ const getCommentsByPostId = async (postId) => {
       .populate("post")
       .populate("likes")
       .sort({ createdAt: -1 })
-      console.log("comments",comments[0].replies);
       
 
     return comments;

@@ -107,6 +107,7 @@ const Navbar = () => {
                         className="h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800"
                         src={user?.avatar || "https://via.placeholder.com/40"}
                         alt=""
+                        loading="lazy"
                       />
                     </Menu.Button>
                   </div>
@@ -133,19 +134,7 @@ const Navbar = () => {
                           </Link>
                         )}
                       </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            href="/settings"
-                            className={classNames(
-                              active ? "bg-gray-100 dark:bg-gray-700" : "",
-                              "block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 transition-colors duration-200"
-                            )}
-                          >
-                            Settings
-                          </Link>
-                        )}
-                      </Menu.Item>
+                     
                       <Menu.Item>
                         {({ active }) => (
                           <button

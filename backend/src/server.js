@@ -15,42 +15,44 @@ const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
 const upload = require('./middleware/upload.middleware'); // Import upload middleware for avatars
 const uploadPostMedia = require('./middleware/uploadPostMedia.middleware'); // Import upload middleware for post media
-const authController = require('./controllers/auth/auth.controller'); // Import authController
-const postService = require('./services/post/post.service'); // Import postService
-const { verifyToken } = require('./services/auth/auth.service'); // Import verifyToken
+const authController = require('./controllers/auth/auth'); // Import authController
+const postService = require('./services/post/post'); // Import postService
+const { verifyToken } = require('./services/auth/auth'); // Import verifyToken
 
 async function startServer() {
   const app = express();
   
+  await connectDB();
   // Security middleware
+  app.use(cors());
   app.use(helmet());
   app.use(compression());
-  app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    credentials: true
-  }));
+  app.use(express.json());
   
   // Connect to MongoDB
-  await connectDB();
   
-  // Middleware
-  app.use(cors());
-  app.use(express.json());
 
-  // New route for user registration with image upload
-  app.post('/register-with-avatar', upload.single('avatar'), async (req, res) => {
-    try {
-      const { username, email, password, name } = req.body;
-      const avatar = req.file ? req.file.path : null; // Cloudinary URL
-
-      const result = await authController.register(username, email, password, name, avatar);
-      res.status(201).json(result);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+app.post('/register-with-avatar', (req, res, next) => {
+  upload.single('avatar')(req, res, function (err) {
+    if (err) {
+      console.error('Multer error:', err);
+      return res.status(400).json({ message: err.message || 'File upload error' });
     }
-  });
 
-  // New route for post creation with media upload
+    // No error, continue to your logic
+    const { username, email, password, name } = req.body;
+    const avatar = req.file ? req.file.path : null;
+
+    authController.register(username, email, password, name, avatar)
+      .then(result => res.status(201).json(result))
+      .catch(error => {
+        console.error("Registration error:", error);
+        res.status(400).json({ message: error.message });
+      });
+  });
+});
+
+
   app.post('/create-post-with-media', uploadPostMedia, async (req, res) => {
     try {
       const { content } = req.body;

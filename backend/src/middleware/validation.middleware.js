@@ -1,7 +1,5 @@
 const Joi = require('joi');
 
-const STRONG_PASSWORD = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-const USERNAME_REGEX = /^[a-zA-Z0-9_]+$/;
 
 const userValidationSchema = {
   signup: Joi.object({

@@ -1,4 +1,4 @@
-const User = require("../../models/user/user.model");
+const User = require("../../models/user/user");
 const {
   UserInputError,
   AuthenticationError,

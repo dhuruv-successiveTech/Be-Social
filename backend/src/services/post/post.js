@@ -1,5 +1,5 @@
-const Post = require('../../models/post/post.model');
-const User = require('../../models/user/user.model');
+const Post = require('../../models/post/post');
+const User = require('../../models/user/user');
 const { AuthenticationError, UserInputError } = require('apollo-server-express');
 
 const postService = {
@@ -34,21 +34,19 @@ const postService = {
         { author: { $in: [...user.following, userId] } },
       ],
     })
-      .sort({ createdAt: -1, _id: -1 }) // Stable sort
+      .sort({ createdAt: -1, _id: -1 }) 
       .skip(offset)
       .limit(limit)
       .populate('author')
       .populate('likes');
     
-    // Debug logging for pagination
-    console.log('[getFeed] offset:', offset, 'limit:', limit, 'returned post IDs:', posts.map(p => p._id.toString()));
+    // console.log('[getFeed] offset:', offset, 'limit:', limit, 'returned post IDs:', posts.map(p => p._id.toString()));
 
     return posts;
   },
 
   async getPost(postId) {
-    console.log("postId",postId);
-    
+  
     const post = await Post.findById(postId)
       .populate('author')
       .populate('comments')
@@ -119,8 +117,7 @@ const postService = {
       .sort({ createdAt: -1 })
       .populate('author')
       .exec();
-    console.log(posts);
-    
+  
     return posts;
   },
 

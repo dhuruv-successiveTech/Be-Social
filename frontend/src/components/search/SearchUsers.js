@@ -1,30 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useRef } from 'react';
-import { gql } from '@apollo/client';
-import { useQuery } from '@apollo/client/react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../../hooks/useAuth';
-import { Card } from '../common/Card';
-
-const SEARCH_USERS = gql`
-  query SearchUsers($query: String!) {
-    searchUsers(query: $query) {
-      id
-      username
-      name
-      avatar
-      bio
-      followers {
-        id
-      }
-    }
-  }
-`;
+import { useState, useRef } from "react";
+import { useQuery } from "@apollo/client/react";
+import { useRouter } from "next/navigation";
+import { Card } from "../common/Card";
+import { SEARCH_USERS } from "../../graphql/queries/user";
 
 const SearchUsers = () => {
-  const [query, setQuery] = useState('');
-  const { user: currentUser } = useAuth();
+  const [query, setQuery] = useState("");
   const router = useRouter();
 
   const { loading, error, data } = useQuery(SEARCH_USERS, {
@@ -73,8 +56,12 @@ const SearchUsers = () => {
         />
       </Card>
 
-      {loading && <div className="text-center text-indigo-500">Searching...</div>}
-      {error && <div className="text-center text-red-500">Error searching users</div>}
+      {loading && (
+        <div className="text-center text-indigo-500">Searching...</div>
+      )}
+      {error && (
+        <div className="text-center text-red-500">Error searching users</div>
+      )}
 
       {showList && (
         <div className="space-y-4">
@@ -88,13 +75,18 @@ const SearchUsers = () => {
             >
               <div className="flex items-center">
                 <img
-                  src={user.avatar || 'https://via.placeholder.com/40'}
+                  src={user.avatar || "https://via.placeholder.com/40"}
                   alt={user.username}
+                  loading="lazy"
                   className="w-12 h-12 rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover"
                 />
                 <div className="ml-4 flex-1">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">{user.name}</h3>
-                  <p className="text-indigo-500 dark:text-indigo-300">@{user.username}</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    {user.name}
+                  </h3>
+                  <p className="text-indigo-500 dark:text-indigo-300">
+                    @{user.username}
+                  </p>
                   {user.bio && (
                     <p className="text-gray-600 dark:text-gray-400 text-sm mt-2 line-clamp-2">
                       {user.bio}
@@ -108,7 +100,9 @@ const SearchUsers = () => {
             </Card>
           ))}
           {users?.length === 0 && query && (
-            <Card className="text-center text-gray-500 p-4" animate>No users found</Card>
+            <Card className="text-center text-gray-500 p-4" animate>
+              No users found
+            </Card>
           )}
         </div>
       )}

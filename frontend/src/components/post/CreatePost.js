@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { GET_FEED, GET_USER_POSTS } from "@/graphql/queries";
+import { GET_FEED } from "../../graphql/queries/getFeed";
+import { GET_USER_POSTS } from "../../graphql/queries/getPosts";
 import toast from "react-hot-toast";
 import { useApolloClient } from "@apollo/client/react";
 
@@ -203,6 +204,7 @@ const CreatePost = ({ onPostCreated }) => {
           <img
             src={user?.avatar || "https://via.placeholder.com/40"}
             alt={user?.username}
+            loading="lazy"
             className={`w-10 h-10 rounded-full ring-2 ring-indigo-500/20 bg-gray-700`}
           />
           <div className="flex-1">
@@ -302,6 +304,7 @@ const CreatePost = ({ onPostCreated }) => {
                     <img
                       src={URL.createObjectURL(file)}
                       alt={`Preview ${index + 1}`}
+                      loading="lazy"
                       className="rounded-lg w-full h-40 object-cover"
                     />
                   ) : (

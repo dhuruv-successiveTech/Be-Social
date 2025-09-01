@@ -1,12 +1,11 @@
 "use client";
 
 import { useQuery, useSubscription } from "@apollo/client/react";
-import { GET_USER_POSTS } from "../../graphql/queries/getUserPosts";
-
-import { COMMENT_ADDED_SUBSCRIPTION } from "../../graphql/subscriptions";
+import { GET_USER_POSTS } from "../../graphql/queries/getPosts";
+import { COMMENT_ADDED_SUBSCRIPTION } from "../../graphql/subscriptions/post";
 import { useState } from "react";
 import CommentDialog from "./CommentDialog";
-import { GET_COMMENTS } from "../../graphql/queries/getComments";
+import { GET_COMMENTS } from "../../graphql/queries/getComment";
 
 const CommentList = ({ postId }) => {
   const { data, loading, error } = useQuery(GET_COMMENTS, {
@@ -57,6 +56,7 @@ const comments = data?.getComments
           <img
             src={comment.author.avatar || "https://via.placeholder.com/32"}
             alt={comment.author.username}
+            loading="lazy"
             className="w-8 h-8 rounded-full ring-2 ring-indigo-500/10"
           />
           <div className="flex-1">
@@ -93,6 +93,7 @@ const comments = data?.getComments
                     <img
                       src={reply.author.avatar || "https://via.placeholder.com/32"}
                       alt={reply.author.username}
+                      loading="lazy"
                       className="w-6 h-6 rounded-full ring-2 ring-indigo-500/10"
                     />
                     <div className="flex-1">

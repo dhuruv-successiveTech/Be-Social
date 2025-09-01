@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client/react';
-import { GET_COMMENTS } from '../../graphql/queries';
-import { useAuth } from '../../hooks/useAuth';
+import { GET_COMMENTS } from '../../graphql/queries/getComment';
 import { gql } from '@apollo/client';
 
 const CREATE_COMMENT = gql`
@@ -131,6 +130,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
             <img
               src={postAuthor.avatar || "https://via.placeholder.com/40"}
               alt={postAuthor.username}
+              loading="lazy"
               className="w-8 h-8 rounded-full"
             />
             <div>
@@ -151,6 +151,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
                   <img
                     src={comment.author.avatar || "https://via.placeholder.com/40"}
                     alt={comment.author.username}
+                    loading="lazy"
                     className="w-8 h-8 rounded-full"
                   />
                   <div className="flex-1">
@@ -177,6 +178,7 @@ const CommentModal = ({ postId, isOpen, onClose, postAuthor, postContent }) => {
                             <img
                               src={reply.author.avatar || "https://via.placeholder.com/40"}
                               alt={reply.author.username}
+                              loading="lazy"
                               className="w-6 h-6 rounded-full"
                             />
                             <div>

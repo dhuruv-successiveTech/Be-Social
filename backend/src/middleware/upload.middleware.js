@@ -10,7 +10,6 @@ const storage = new CloudinaryStorage({
     public_id: (req, file) => `${Date.now()}-${file.originalname}`,
   },
 });
-
 const upload = multer({ storage: storage });
 
 module.exports = upload;

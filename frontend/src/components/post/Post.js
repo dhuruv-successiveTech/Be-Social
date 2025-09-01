@@ -3,18 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useMutation } from "@apollo/client/react";
 import { formatDistance } from "date-fns";
-import { motion, AnimatePresence } from "framer-motion";
-import { Card } from "../common/Card";
-import { Button } from "../common/Button";
-import { Input } from "../common/Input";
 import CommentList from "../comment/CommentList";
 import toast from "react-hot-toast";
-import { UPDATE_POST, DELETE_POST } from "../../graphql/mutations/postMutations";
-import { ADD_COMMENT } from "../../graphql/mutations/commentMutations";
+import { UPDATE_POST, DELETE_POST } from "../../graphql/mutations/post";
+import { ADD_COMMENT } from "../../graphql/mutations/comment";
 import Spinner from "../shared/Spinner";
 import ShareModal from "./ShareModal";
 import { gql } from "@apollo/client";
-import { FiHeart, FiMessageSquare, FiShare2, FiMoreVertical, FiEdit2, FiTrash2 } from "react-icons/fi";
 
 const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
   const [showComments, setShowComments] = useState(false);
@@ -146,6 +141,7 @@ const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
           <img
             src={post.author.avatar || "https://via.placeholder.com/40"}
             alt={post.author.username}
+            loading="lazy"
             className={`w-12 h-12 rounded-full object-cover ring-2 ring-indigo-400/20 bg-gray-700`}
           />
           <div>
@@ -263,6 +259,7 @@ const Post = ({ post, onLike, currentUser, onPostDelete, onPostUpdate }) => {
                   key={index}
                   src={url}
                   alt={`Media ${index + 1}`}
+                  loading="lazy"
                   className={mediaClass}
                 />
               );

@@ -1,128 +1,19 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { gql } from "@apollo/client";
+
 import { useQuery, useMutation, useSubscription } from "@apollo/client/react";
 import { motion } from "framer-motion";
 import { FiMessageCircle, FiUsers } from "react-icons/fi";
 import toast from "react-hot-toast";
-
 import { useAuth } from "../../hooks/useAuth";
-import { PageBackground, Card, GradientText, LoadingSpinner, Modal } from "../common";
+import { PageBackground, Card, GradientText, LoadingSpinner } from "../common";
 import { fadeInScale, slideIn, staggerContainer } from "../common/animations";
+import { GET_CHAT, GET_CHATS, GET_CURRENT_USER_FOLLOWING } from "../../graphql/queries/chat";
+import { SEND_MESSAGE, CREATE_CHAT } from "../../graphql/mutations/chat";
+import { MESSAGE_SUBSCRIPTION } from "../../graphql/subscriptions/chat";
 
-// ---------------- GraphQL ----------------
-const GET_CHATS = gql`
-  query GetChats {
-    getChats {
-      id
-      participants {
-        id
-        username
-        avatar
-      }
-      messages {
-        id
-        content
-        sender {
-          id
-          username
-        }
-        createdAt
-      }
-      isGroupChat
-      groupName
-    }
-  }
-`;
 
-const GET_CHAT = gql`
-  query GetChat($chatId: ID!) {
-    getChat(chatId: $chatId) {
-      id
-      participants {
-        id
-        username
-        avatar
-      }
-      messages {
-        id
-        content
-        sender {
-          id
-          username
-        }
-        createdAt
-      }
-      isGroupChat
-      groupName
-    }
-  }
-`;
-
-const GET_CURRENT_USER_FOLLOWING = gql`
-  query GetCurrentUserFollowing {
-    getCurrentUser {
-      id
-      following {
-        id
-        username
-        avatar
-      }
-    }
-  }
-`;
-
-const SEND_MESSAGE = gql`
-  mutation SendMessage($chatId: ID!, $content: String!) {
-    sendMessage(chatId: $chatId, content: $content) {
-      id
-      content
-      sender {
-        id
-        username
-      }
-      createdAt
-    }
-  }
-`;
-
-const CREATE_CHAT = gql`
-  mutation CreateChat(
-    $participantIds: [ID!]!
-    $isGroup: Boolean
-    $groupName: String
-  ) {
-    createChat(
-      participantIds: $participantIds
-      isGroup: $isGroup
-      groupName: $groupName
-    ) {
-      id
-      participants {
-        id
-        username
-        avatar
-      }
-      isGroupChat
-      groupName
-    }
-  }
-`;
-
-const MESSAGE_SUBSCRIPTION = gql`
-  subscription MessageReceived($chatId: ID!) {
-    messageReceived(chatId: $chatId) {
-      id
-      content
-      sender {
-        id
-        username
-      }
-      createdAt
-    }
-  }
-`;
 
 // ---------------- Components ----------------
 const Message = ({ message, isOwn }) => (
@@ -180,6 +71,7 @@ const ChatList = ({ chats, selectedChatId, onSelectChat, currentUser }) => (
                   chat.participants.find((p) => p.id !== currentUser.id)
                     ?.username
                 }
+                loading="lazy"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -367,6 +259,7 @@ const ChatContainer = () => {
                           <img
                             src={f.avatar || "/default-media-placeholder.jpg"}
                             alt={f.username}
+                            loading="lazy"
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -410,6 +303,7 @@ const ChatContainer = () => {
                               ?.avatar || "/default-media-placeholder.jpg"
                           }
                           alt="avatar"
+                          loading="lazy"
                           className="w-full h-full object-cover"
                         />
                       </div>

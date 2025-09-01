@@ -23,6 +23,7 @@ const UserListModal = ({ users, title, onClose }) => {
               <img
                 src={user.avatar || "https://via.placeholder.com/40"}
                 alt={user.username}
+                loading="lazy"
                 className="w-12 h-12 rounded-full border-2 border-indigo-100 dark:border-indigo-900 object-cover mr-4"
               />
               <div>

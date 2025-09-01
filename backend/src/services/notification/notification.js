@@ -1,4 +1,4 @@
-const Notification = require('../../models/notification/notification.model');
+const Notification = require('../../models/notification/notification');
 const { PubSub } = require('graphql-subscriptions');
 
 const pubsub = new PubSub();
