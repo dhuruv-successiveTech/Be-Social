@@ -4,17 +4,15 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { 
   BellIcon, 
   Bars3Icon, 
-  XMarkIcon, 
-  SunIcon, 
-  MoonIcon,
+  XMarkIcon,
   HomeIcon,
   GlobeAltIcon,
   ChatBubbleOvalLeftIcon,
-  UserCircleIcon,
-  CogIcon
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../hooks/useAuth";
 import NotificationList from "../notification/NotificationList";
+import { useQuery } from "@apollo/client/react";
+import { GET_UNREAD_NOTIFICATION_COUNT } from "../../graphql/queries/getUnreadNotificationCount";
 
 const navigation = [
   { name: "Home", href: "/", current: true, icon: HomeIcon },
@@ -29,6 +27,8 @@ function classNames(...classes) {
 const Navbar = () => {
   const { user, logout } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
+  const { data } = useQuery(GET_UNREAD_NOTIFICATION_COUNT);
+  const unreadCount = data?.getUnreadNotificationCount;
 
   const handleCloseNotifications = () => {
     setShowNotifications(false);
@@ -53,8 +53,8 @@ const Navbar = () => {
               <div className="flex-1 flex items-center justify-between sm:justify-start">
                 <div className="flex-shrink-0 flex items-center">
                   <Link href="/">
-                    <span className={`text-xl font-bold transition-colors text-gray-100 hover:text-indigo-400`}>
-                      Social App
+                    <span className={`text-3xl font-bold transition-colors text-gray-100 hover:text-indigo-400`}>
+                      BeSocial
                     </span>
                   </Link>
                 </div>
@@ -90,6 +90,9 @@ const Navbar = () => {
                   >
                     <span className="sr-only">View notifications</span>
                     <BellIcon className="h-5 w-5" aria-hidden="true" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">{unreadCount}</span>
+                    )}
                   </button>
                   {showNotifications && (
                     <div className="absolute right-0 mt-2 w-96 z-50">

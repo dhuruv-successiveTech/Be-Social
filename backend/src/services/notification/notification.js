@@ -1,10 +1,17 @@
-const Notification = require('../../models/notification/notification');
-const { PubSub } = require('graphql-subscriptions');
+const Notification = require("../../models/notification/notification");
+const { PubSub } = require("graphql-subscriptions");
 
 const pubsub = new PubSub();
 
 const notificationService = {
-  async createNotification(type, recipientId, senderId, postId = null, commentId = null, chatId = null) {
+  async createNotification(
+    type,
+    recipientId,
+    senderId,
+    postId = null,
+    commentId = null,
+    chatId = null
+  ) {
     const notification = await Notification.create({
       type,
       recipient: recipientId,
@@ -15,14 +22,14 @@ const notificationService = {
     });
 
     const populatedNotification = await notification.populate([
-      'sender',
-      'post',
-      'comment',
-      'chat',
+      "sender",
+      "post",
+      "comment",
+      "chat",
     ]);
 
     // Publish notification to subscriber
-    pubsub.publish('NOTIFICATIONS', {
+    pubsub.publish("NOTIFICATIONS", {
       notificationReceived: populatedNotification,
     });
 
@@ -39,6 +46,13 @@ const notificationService = {
 
     return notifications;
   },
+  async getUnreadNotificationCount(userId) {
+    const unreadCount = await Notification.countDocuments({
+      recipient: userId,
+      read: false,
+    });
+    return unreadCount;
+  },
 
   async markAsRead(notificationId, userId) {
     const notification = await Notification.findOne({
@@ -47,18 +61,13 @@ const notificationService = {
     });
 
     if (!notification) {
-      throw new Error('Notification not found');
+      throw new Error("Notification not found");
     }
 
     notification.read = true;
     await notification.save();
 
-    return notification.populate([
-      'sender',
-      'post',
-      'comment',
-      'chat',
-    ]);
+    return notification.populate(["sender", "post", "comment", "chat"]);
   },
 
   async markAllAsRead(userId) {
@@ -77,7 +86,7 @@ const notificationService = {
     });
 
     if (!notification) {
-      throw new Error('Notification not found');
+      throw new Error("Notification not found");
     }
 
     await notification.remove();

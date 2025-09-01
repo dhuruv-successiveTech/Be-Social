@@ -76,6 +76,10 @@ const resolvers = {
       const decoded = getUserFromReq(req);
       return notificationService.getNotifications(decoded.id);
     },
+    getUnreadNotificationCount: async (_, __, { req }) => {
+      const decoded = getUserFromReq(req);
+      return notificationService.getUnreadNotificationCount(decoded.id);
+    },
   },
 
   Mutation: {

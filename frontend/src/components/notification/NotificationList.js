@@ -82,6 +82,8 @@ const NotificationItem = ({ notification, onMarkAsRead }) => {
 
 const NotificationList = ({ onClose }) => {
   const { loading, error, data, subscribeToMore } = useQuery(GET_NOTIFICATIONS);
+  console.log("data",data);
+  
   const [markAsRead] = useMutation(MARK_NOTIFICATION_AS_READ);
   const notificationRef = useRef(null);
 
