@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import { Card } from "../common/Card";
 import { SEARCH_USERS } from "../../graphql/queries/user";
 import Image from "next/image";
+import useAuth from "../../hooks/useAuth";
 
 const SearchUsers = () => {
   const [query, setQuery] = useState("");
   const router = useRouter();
+  const { user } = useAuth();
 
   const { loading, error, data } = useQuery(SEARCH_USERS, {
     variables: { query },
@@ -40,7 +42,7 @@ const SearchUsers = () => {
           user.username.toLowerCase().includes(query.toLowerCase()) ||
           user.name.toLowerCase().includes(query.toLowerCase())
       )
-    : data?.searchUsers;
+    : data?.searchUsers.filter((sUser) => sUser?.id != user?.id);
 
   return (
     <div className="max-w-2xl mx-auto p-4">
