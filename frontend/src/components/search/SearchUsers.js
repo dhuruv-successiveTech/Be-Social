@@ -15,7 +15,7 @@ const SearchUsers = () => {
 
   const { loading, error, data } = useQuery(SEARCH_USERS, {
     variables: { query },
-    skip: false, // Always fetch, so we can show all users when query is empty
+    skip: false
   });
 
   const [showList, setShowList] = useState(false);
